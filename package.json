@@ -4,7 +4,8 @@
   "description": "Receive data from a Salesforce org in a durable, continuous flow.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "`npm bin`/ava **/*-test.js",
+    "test:unit": "`npm bin`/ava lib/**/*-test.js"
   },
   "repository": {
     "type": "git",
@@ -14,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/heroku/salesforce-cdc-connector/issues"
   },
-  "homepage": "https://github.com/heroku/salesforce-cdc-connector#readme"
+  "homepage": "https://github.com/heroku/salesforce-cdc-connector#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "episode-7": "^1.1.1",
+    "jsforce": "^1.8.0",
+    "jsforce-connection": "^2.1.0",
+    "jsforce-patient-bulk-op": "^1.0.1"
+  },
+  "devDependencies": {
+    "ava": "^0.24.0"
+  }
 }
