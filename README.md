@@ -51,6 +51,43 @@ A reactive streaming provider of Salesforce schema, data, and ongoing changes.
 
   `content` contains CDC event data.
 
+### Plugins
+
+Observers (consumers) of the main data stream are implemented as plugins.
+
+Each plugin's **observe function** receives an [Rx.Observable](http://reactivex.io/rxjs/manual/overview.html#observable) pushing schema, records, and change messages. RxJS provides a large palette of [reactive operators](http://reactivex.io/rxjs/manual/overview.html#operators) to regulate, transform, and consume the stream.
+
+💡 *See [plugin-console-output](./lib/plugin-console-output.js) for a reference implementation.*
+
+When this app runs, it will try to load each plugin specified in the `PLUGIN_NAMES` environment variable, first from the relative `lib/` path and then from `node_modules/`.
+
+* **relative modules in `lib/`**
+  * Plugin names are resolved to a filename
+  * The `plugin-` name prefix is required in the filename
+  * For a plugin named `example`, the source file must be located in `lib/plugin-example.js`
+* **npm packages in `node_modules/`**
+  * Plugin names are resolve to an npm package name
+  * The `salesforce-cdc-connector-plugin-` name prefix is required in the package name
+  * For a plugin named `example`, the npm package must be named `salesforce-cdc-connector-plugin-example`.
+
+#### Observe function signature
+
+```javascript
+function friendlyName(
+  observable,               // Rx.Observable (the data stream source)
+  logger                    // (optional) Function: call with log messages, default no-op
+)
+```
+
+#### Install a plugin
+
+1. `npm install salesforce-cdc-connector-plugin-example --save`
+2. Update the environment variable with a comma-separated list of the plugins to load:
+
+    ```bash
+    PLUGIN_NAMES=console-output,example
+    ```
+
 
 Requirements
 ------------
@@ -81,6 +118,17 @@ Authentication is performed based on environment variables. Either of the follow
 Additional runtime config vars:
 
 * `VERBOSE=true` to output progress details to stderr
+
+Usage
+-----
+
+```bash
+# First time setup:
+npm install
+
+# Run the connector:
+node lib/exec
+```
 
 Local development
 -----------------
