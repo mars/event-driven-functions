@@ -4,6 +4,48 @@ Receive data from a Salesforce org in a durable, continuous flow.
 
 💻👩‍🔬 *This project is a exploration into solving common customer use-cases with Salesforce's newest streaming technology, Change Data Capture [CDC].*
 
+Architecture
+------------
+
+A reactive streaming provider of Salesforce schema, data, and ongoing changes.
+
+### Processes
+
+1. Authenticate with Salesforce API
+1. Push messages from CDC firehose
+1. Push message for each sObject's schema & existing records
+
+### Internal Message Types
+
+* **Schema**
+
+    ```json
+    {
+      type: "schema",
+      object: "Account",
+      content: { /* sobjects/describe API response */ }
+    }
+    ```
+* **Records**
+
+    ```json
+    {
+      type: "records",
+      object: "Account",
+      content: [ /* Array of records from Bulk API */ ]
+    }
+    ```
+* **Change**
+
+    ```json
+    {
+      type: "change",
+      object: "Account",
+      content: { /* CDC event data */ }
+    }
+    ```
+
+
 Requirements
 ------------
 
