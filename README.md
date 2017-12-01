@@ -21,29 +21,35 @@ A reactive streaming provider of Salesforce schema, data, and ongoing changes.
 
     ```json
     {
-      type: "schema",
-      object: "Account",
-      content: { /* sobjects/describe API response */ }
+      "type": "schema",
+      "object": "Account",
+      "content": { }
     }
     ```
+
+  `content` contains sobjects/describe API response.
 * **Records**
 
     ```json
     {
-      type: "records",
-      object: "Account",
-      content: [ /* Array of records from Bulk API */ ]
+      "type": "records",
+      "object": "Account",
+      "content": [ ]
     }
     ```
+
+  `content` contains array of records from Bulk API.
 * **Change**
 
     ```json
     {
-      type: "change",
-      object: "Account",
-      content: { /* CDC event data */ }
+      "type": "change",
+      "object": "Account",
+      "content": { }
     }
     ```
+
+  `content` contains CDC event data.
 
 
 Requirements
