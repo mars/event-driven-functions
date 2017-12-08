@@ -1,3 +1,5 @@
 .env
 *.log
 **/node_modules
+*.parquet
+metastore_db/

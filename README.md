@@ -55,7 +55,7 @@ A reactive streaming provider of Salesforce schema, data, and ongoing changes.
 
 Observers (consumers) of the main data stream are implemented as plugins.
 
-Each plugin's **observe function** receives an [Rx.Observable](http://reactivex.io/rxjs/manual/overview.html#observable) pushing schema, records, and change messages. RxJS provides a large palette of [reactive operators](http://reactivex.io/rxjs/manual/overview.html#operators) to regulate, transform, and consume the stream.
+Each plugin's **observe function** receives two [Rx.Observables](http://reactivex.io/rxjs/manual/overview.html#observable) pushing schemas+records and change messages. RxJS provides a large palette of [reactive operators](http://reactivex.io/rxjs/manual/overview.html#operators) to transform and consume the stream.
 
 💡 *See [plugin-console-output](./lib/plugin-console-output.js) for a reference implementation.*
 
@@ -74,8 +74,9 @@ When this app runs, it will try to load each plugin specified in the `PLUGIN_NAM
 
 ```javascript
 function friendlyName(
-  observable,               // Rx.Observable (the data stream source)
-  logger                    // (optional) Function: call with log messages, default no-op
+  schemaAndRecordsObservable,  // Rx.Observable (the data stream source)
+  changeDataCaptureObservable, // Rx.Observable (the data stream source)
+  logger                       // (optional) Function: call with log messages, default no-op
 )
 ```
 
@@ -99,6 +100,7 @@ Install
 
 1. Clone or fork this repo.
 1. `cd salesforce-cdc-connector/` (or whatever you named the repo's directory)
+1. `brew install cmake boost` (dependencies for **node-parquet**)
 1. `npm install`
 
 Configuration
