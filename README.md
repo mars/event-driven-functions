@@ -151,3 +151,37 @@ Implemented with [AVA](https://github.com/avajs/ava), concurrent test runner.
 ### All Tests
 
 * `npm test` or `npm run test`
+
+Notes
+-----
+
+### Read parquet files with Spark
+
+Download the [Spark binary distribution](https://spark.apache.org/downloads.html), unzip it, and then run its `bin/spark-shell` executable:
+
+```
+$ ./spark-2.2.0-bin-hadoop2.7/bin/spark-shell
+
+…
+
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.2.0
+      /_/
+
+…
+
+scala>
+```
+
+Once the `scala>` command prompt appears, proceed with the following commands (example is for `Product2`):
+
+```
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+val product2Data = sqlContext.read.parquet("salesforce-Product2.parquet")
+product2Data.registerTempTable("Product2")
+val allRecords = sqlContext.sql("SELECT * FROM Product2")
+allRecords.show()
+```
