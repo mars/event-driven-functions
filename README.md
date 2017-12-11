@@ -122,15 +122,23 @@ Additional runtime config vars:
 * `VERBOSE`
   * enable detailed runtime logging to stderr
   * example: `VERBOSE=true`
-  * default: unset, no log output
+  * default value: unset, no log output
 * `PLUGIN_NAMES`
   * configure the consumers/observers of the Salesforce data streams
   * example: `PLUGIN_NAMES=console-output,parquet-output`
-  * default: `console-output`
+  * default value: `console-output`
 * `SELECT_SOBJECTS`
   * a comma-separated list of Salesforce objects to read
   * example: `SELECT_SOBJECTS=Product2,Pricebook2`
-  * default: all readable objects
+  * default value: unset, all readable objects
+* `READ_MODE`
+  * one of three values
+    * `records` for sObject schemas and bulk queries
+      * *process will exit when compete*
+    * `changes` for CDC (change data capture) streams
+    * `all` for both records & changes
+  * example: `READ_MODE=records`
+  * default value: `all`
 
 
 Usage
