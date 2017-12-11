@@ -1,8 +1,8 @@
-# Salesforce Change Data Capture Connector
+# Salesforce Data Connector
 
-Receive data from a Salesforce org in a durable, continuous flow.
+Receive data from a Salesforce org: schemas, bulk records, and CDC (change data capture) streams.
 
-💻👩‍🔬 *This project is a exploration into solving common customer use-cases with Salesforce's newest streaming technology, Change Data Capture [CDC].*
+💻👩‍🔬 *This project is a exploration into solving emerging use-cases for Salesforce data.*
 
 Architecture
 ------------
@@ -67,8 +67,8 @@ When this app runs, it will try to load each plugin specified in the `PLUGIN_NAM
   * For a plugin named `example`, the source file must be located in `lib/plugin-example.js`
 * **npm packages in `node_modules/`**
   * Plugin names are resolve to an npm package name
-  * The `salesforce-cdc-connector-plugin-` name prefix is required in the package name
-  * For a plugin named `example`, the npm package must be named `salesforce-cdc-connector-plugin-example`.
+  * The `salesforce-data-connector-plugin-` name prefix is required in the package name
+  * For a plugin named `example`, the npm package must be named `salesforce-data-connector-plugin-example`.
 
 #### Observe function signature
 
@@ -82,7 +82,7 @@ function friendlyName(
 
 #### Install a plugin
 
-1. `npm install salesforce-cdc-connector-plugin-example --save`
+1. `npm install salesforce-data-connector-plugin-example --save` (not a real plugin)
 2. Update the environment variable with a comma-separated list of the plugins to load:
 
     ```bash
@@ -99,7 +99,7 @@ Install
 -------
 
 1. Clone or fork this repo.
-1. `cd salesforce-cdc-connector/` (or whatever you named the repo's directory)
+1. `cd salesforce-data-connector/` (or whatever you named the repo's directory)
 1. `brew install cmake boost` (dependencies for **node-parquet**)
 1. `npm install`
 

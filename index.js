@@ -1,3 +1,3 @@
-const cdcConnector = require('./lib');
+const connector = require('./lib');
 
-module.exports = cdcConnector;
+module.exports = connector;
