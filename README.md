@@ -119,7 +119,19 @@ Authentication is performed based on environment variables. Either of the follow
 
 Additional runtime config vars:
 
-* `VERBOSE=true` to output progress details to stderr
+* `VERBOSE`
+  * enable detailed runtime logging to stderr
+  * example: `VERBOSE=true`
+  * default: unset, no log output
+* `PLUGIN_NAMES`
+  * configure the consumers/observers of the Salesforce data streams
+  * example: `PLUGIN_NAMES=console-output,parquet-output`
+  * default: `console-output`
+* `SELECT_SOBJECTS`
+  * a comma-separated list of Salesforce objects to read
+  * example: `SELECT_SOBJECTS=Product2,Pricebook2`
+  * default: all readable objects
+
 
 Usage
 -----
