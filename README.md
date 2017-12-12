@@ -51,7 +51,133 @@ A reactive streaming provider of Salesforce schema, data, and ongoing changes.
 
   `content` contains CDC event data.
 
-### Plugins
+
+Requirements
+------------
+
+* [Node.js](https://nodejs.org/) 8.9 with npm 5
+
+Install
+-------
+
+1. Clone or fork this repo.
+1. `cd salesforce-data-connector/` (or whatever you named the repo's directory)
+1. `brew install cmake boost` (dependencies for **node-parquet**)
+1. `npm install`
+
+#### Install a plugin
+
+1. `npm install salesforce-data-connector-plugin-example` (not a real plugin)
+2. Update the environment variable with a comma-separated list of the plugins to load:
+
+    ```bash
+    PLUGIN_NAMES=console-output,example
+    ```
+
+Usage
+-----
+
+# First time setup
+
+```bash
+npm install
+cp .env.sample .env
+```
+
+Then, update `.env` file with config values for auth & debugging:
+
+```
+VERBOSE=true
+SALESFORCE_USERNAME=mmm@mmm.mmm
+SALESFORCE_PASSWORD=nnnnnttttt
+```
+
+### Output to console
+
+Sample command:
+
+```bash
+SOBJECT_NAMES=Account,Contact,Lead,Opportunity \
+node lib/exec
+```
+
+🔁 *This command runs continuously, listening for change events.*
+
+### Output to Parquet (on S3)
+
+To enable writing to S3, add AWS config to `.env`:
+
+```
+AWS_ACCESS_KEY_ID=xxxxx
+AWS_REGION=yy-yyyy-y
+AWS_SECRET_ACCESS_KEY=zzzzz
+BUCKET_NAME=aaaaa
+```
+
+Sample command:
+
+```bash
+PLUGIN_NAMES=console-output,parquet-output \
+SOBJECT_NAMES=Product2,Pricebook2 \
+READ_MODE=records \
+node lib/exec
+```
+
+🛑 *This command exits after all parquet files are written.*
+
+Set `PLUGIN_NAMES=parquet-output` to activate the plugin.
+
+The parquet files will be written locally to the current working directory. Those files also **upload to S3 if the `AWS_*` & `BUCKET_NAME` env vars are set**.
+
+The parquet plugin does not use change events, because they cannot be updated in-place. Unless the change stream is needed by a different plugin, configure the app to exit upon completion by setting `READ_MODE=records`.
+
+
+Configuration
+-------------
+
+### Configure Authentication
+
+Performed based on environment variables. Either of the following authentication methods may be used:
+
+* Username + password
+  * `SALESFORCE_USERNAME`
+  * `SALESFORCE_PASSWORD` (password+securitytoken)
+  * `SALESFORCE_LOGIN_URL` (optional; defaults to **login.salesforce.com**)
+* OAuth tokens
+  * `SALESFORCE_URL`
+    * *Must include oAuth client ID, secret, & refresh token*
+    * Example: `force://{client-id}:{secret}:{refresh-token}@{instance-name}.salesforce.com`
+
+### Configure Runtime Behavior
+
+* `VERBOSE`
+  * enable detailed runtime logging to stderr
+  * example: `VERBOSE=true`
+  * default value: unset, no log output
+* `PLUGIN_NAMES`
+  * configure the consumers/observers of the Salesforce data streams
+  * example: `PLUGIN_NAMES=console-output,parquet-output`
+  * default value: `console-output`
+* `SELECT_SOBJECTS`
+  * a comma-separated list of Salesforce objects to read
+  * example: `SELECT_SOBJECTS=Product2,Pricebook2`
+  * default value: unset, all readable objects
+* `READ_MODE`
+  * one of three values
+    * `records` for sObject schemas and bulk queries
+      * *process will exit when compete*
+    * `changes` for CDC (change data capture) streams
+    * `all` for both records & changes
+  * example: `READ_MODE=records`
+  * default value: `all`
+
+
+Local development
+-----------------
+
+Set configuration values in a `.env` file based on `.env.sample`.
+
+### Implementing Plugins
 
 Observers (consumers) of the main data stream are implemented as plugins.
 
@@ -80,97 +206,6 @@ function friendlyName(
   logger                       // (optional) Function: call with log messages, default no-op
 )
 ```
-
-#### Install a plugin
-
-1. `npm install salesforce-data-connector-plugin-example --save` (not a real plugin)
-2. Update the environment variable with a comma-separated list of the plugins to load:
-
-    ```bash
-    PLUGIN_NAMES=console-output,example
-    ```
-
-
-Requirements
-------------
-
-* [Node.js](https://nodejs.org/) 8.9.0
-
-Install
--------
-
-1. Clone or fork this repo.
-1. `cd salesforce-data-connector/` (or whatever you named the repo's directory)
-1. `brew install cmake boost` (dependencies for **node-parquet**)
-1. `npm install`
-
-Configuration
--------------
-
-Authentication is performed based on environment variables. Either of the following authentication methods may be used:
-
-* Username + password
-  * `SALESFORCE_USERNAME`
-  * `SALESFORCE_PASSWORD`
-  * `SALESFORCE_LOGIN_URL` (optional; defaults to **login.salesforce.com**)
-* OAuth tokens
-  * `SALESFORCE_URL`
-    * *Must include oAuth client ID, secret, & refresh token*
-    * Example: `force://{client-id}:{secret}:{refresh-token}@{instance-name}.salesforce.com`
-
-Additional runtime config vars:
-
-* `VERBOSE`
-  * enable detailed runtime logging to stderr
-  * example: `VERBOSE=true`
-  * default value: unset, no log output
-* `PLUGIN_NAMES`
-  * configure the consumers/observers of the Salesforce data streams
-  * example: `PLUGIN_NAMES=console-output,parquet-output`
-  * default value: `console-output`
-* `SELECT_SOBJECTS`
-  * a comma-separated list of Salesforce objects to read
-  * example: `SELECT_SOBJECTS=Product2,Pricebook2`
-  * default value: unset, all readable objects
-* `READ_MODE`
-  * one of three values
-    * `records` for sObject schemas and bulk queries
-      * *process will exit when compete*
-    * `changes` for CDC (change data capture) streams
-    * `all` for both records & changes
-  * example: `READ_MODE=records`
-  * default value: `all`
-
-
-Usage
------
-
-```bash
-# First time setup:
-npm install
-
-# Run the connector:
-node lib/exec
-```
-
-### Output to Parquet
-
-Set `PLUGIN_NAMES=parquet-output` to activate the plugin. The parquet files will be written to the current working directory.
-
-Upload them to S3 by setting the following env vars:
-
-* `AWS_ACCESS_KEY_ID`
-* `AWS_REGION`
-* `AWS_SECRET_ACCESS_KEY`
-* `BUCKET_NAME`
-
-Since parquet files cannot be updated, they cannot receive streaming data. Therefore, unless a different plugin is used to process the change stream, disable it by setting `READ_MODE=records`. This will allow the program to exit once all the parquet files have been processed.
-
-
-Local development
------------------
-
-Set configuration values in a `.env` file based on `.env.sample`.
 
 Testing
 -------
