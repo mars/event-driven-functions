@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "`npm bin`/ava **/*-test.js",
-    "test:unit": "`npm bin`/ava lib/**/*-test.js"
+    "test:unit": "`npm bin`/ava lib/**/*-test.js",
+    "test:integration": "`npm bin`/ava test/**/*-test.js"
   },
   "repository": {
     "type": "git",

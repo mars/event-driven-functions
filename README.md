@@ -77,7 +77,7 @@ Install
 Usage
 -----
 
-# First time setup
+### First time setup
 
 ```bash
 npm install
@@ -212,15 +212,20 @@ Testing
 
 Implemented with [AVA](https://github.com/avajs/ava), concurrent test runner.
 
+`npm test` runs only unit tests. It skips integration tests, because Salesforce and AWS config is not automated.
+
 ### Unit Tests
 
 * `npm run test:unit`
 * Defined in `lib/` alongside source files
 * Salesforce API calls are mocked by way of [Episode 7](https://github.com/mars/episode-7)
 
-### All Tests
+### Integration Tests
 
-* `npm test` or `npm run test`
+* `npm run test:integration`
+* Defined in `test/`
+* Salesforce API calls are live 🚨
+
 
 Notes
 -----
