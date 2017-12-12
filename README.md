@@ -76,6 +76,7 @@ When this app runs, it will try to load each plugin specified in the `PLUGIN_NAM
 function friendlyName(
   schemaAndRecordsObservable,  // Rx.Observable (the data stream source)
   changeDataCaptureObservable, // Rx.Observable (the data stream source)
+  env,                         // object containing current environment variables
   logger                       // (optional) Function: call with log messages, default no-op
 )
 ```
@@ -151,6 +152,20 @@ npm install
 # Run the connector:
 node lib/exec
 ```
+
+### Output to Parquet
+
+Set `PLUGIN_NAMES=parquet-output` to activate the plugin. The parquet files will be written to the current working directory.
+
+Upload them to S3 by setting the following env vars:
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_REGION`
+* `AWS_SECRET_ACCESS_KEY`
+* `BUCKET_NAME`
+
+Since parquet files cannot be updated, they cannot receive streaming data. Therefore, unless a different plugin is used to process the change stream, disable it by setting `READ_MODE=records`. This will allow the program to exit once all the parquet files have been processed.
+
 
 Local development
 -----------------
