@@ -1,11 +1,11 @@
-const fs = require('fs');
+const dotenv = require('dotenv');
 const test = require('ava');
 const connector = require('../lib');
 const Episode7 = require('episode-7');
 
-// Configure from environment
-const dotenv = require('dotenv');
-dotenv.config();
+test.beforeEach( t => {
+  dotenv.config();
+});
 
 test('Run for records', t => {
   t.plan(6)

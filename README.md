@@ -170,6 +170,10 @@ Performed based on environment variables. Either of the following authentication
     * `all` for both records & changes
   * example: `READ_MODE=records`
   * default value: `all`
+* `OUTPUT_PATH`
+  * location to write output files
+  * example: `OUTPUT_PATH=~/salesforce-data-connector`
+  * default value: `tmp/`
 
 
 Local development

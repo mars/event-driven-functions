@@ -3,3 +3,4 @@
 **/node_modules
 *.parquet
 metastore_db/
+tmp/*
