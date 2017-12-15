@@ -56,6 +56,8 @@ Requirements
 ------------
 
 * [Node.js](https://nodejs.org/) 8.9 with npm 5
+* [redis](https://redis.io) 
+  * optional; not required if using `READ_MODE=records`
 
 Install
 -------
@@ -174,6 +176,11 @@ Performed based on environment variables. Either of the following authentication
   * location to write output files
   * example: `OUTPUT_PATH=~/salesforce-data-connector`
   * default value: `tmp/`
+* `REDIS_URL`
+  * connection config to Redis datastore
+  * required for *changes* stream, when `READ_MODE=all` or `changes`
+  * example: `REDIS_URL=redis://localhost:6379`
+  * default: unset
 
 
 Local development

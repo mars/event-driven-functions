@@ -3,4 +3,5 @@
 **/node_modules
 *.parquet
 metastore_db/
+dump.rdb
 tmp/*
