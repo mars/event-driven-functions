@@ -181,6 +181,11 @@ Performed based on environment variables. Either of the following authentication
   * required for *changes* stream, when `READ_MODE=all` or `changes`
   * example: `REDIS_URL=redis://localhost:6379`
   * default: unset
+* `REPLAY_ID`
+  * force a specific replayId for CDC streaming
+  * ensure to unset this after usage to prevent the stream from sticking
+  * example: `REPLAY_ID=5678` (or `-2` for all possible events)
+  * default: unset, receive all new events
 
 
 Local development
