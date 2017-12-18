@@ -24,6 +24,7 @@
     "jsforce-connection": "^2.1.0",
     "knox": "git+https://github.com/caremerge/knox.git",
     "node-parquet": "^0.2.6",
+    "node-rdkafka": "^2.2.1",
     "redis": "^2.8.0",
     "rxjs": "^5.5.2"
   },

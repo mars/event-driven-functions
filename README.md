@@ -133,6 +133,41 @@ The parquet files will be written locally to the current working directory. Thos
 
 The parquet plugin does not use change events, because they cannot be updated in-place. Unless the change stream is needed by a different plugin, configure the app to exit upon completion by setting `READ_MODE=records`.
 
+### Output to Kafka
+
+To enable streaming changes to Kafka, attach the [Heroku Kafka add-on](https://elements.heroku.com/addons/heroku-kafka). This will set the following config vars on the app:
+
+```
+KAFKA_PREFIX=vvvvv
+KAFKA_URL=wwwww
+KAFKA_TRUSTED_CERT=xxxxx
+KAFKA_CLIENT_CERT=yyyyy
+KAFKA_CLIENT_CERT_KEY=zzzzz
+```
+
+The `KAFKA_*_CERT` values must be written to eponymous files in `tmp/env/`.
+
+Additionally, the topic to push change messages to is `salesforce-cdc` by default, or set your on custom topic name with:
+
+```
+OUTPUT_KAFKA_TOPIC=aaaaa
+```
+
+Before attempting to output to Kafka, create this topic in Heroku Kafka:
+
+```bash
+salesforce-cdc
+```
+
+Sample command:
+
+```bash
+PLUGIN_NAMES=console-output,kafka-output \
+SOBJECT_NAMES=Account \
+READ_MODE=changes \
+node lib/exec
+```
+
 
 Configuration
 -------------
