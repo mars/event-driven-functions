@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Receive data from a Salesforce org in a durable, continuous flow.",
   "main": "index.js",
+  "engines": {
+    "node": "8.9.x"
+  },
   "scripts": {
     "test": "`npm bin`/ava **/*-test.js",
     "test:unit": "`npm bin`/ava lib/**/*-test.js",

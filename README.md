@@ -76,6 +76,31 @@ Install
     PLUGIN_NAMES=console-output,example
     ```
 
+Deploy
+------
+
+```bash
+heroku create
+heroku buildpacks:add https://github.com/heroku/heroku-buildpack-apt
+heroku buildpacks:add heroku/nodejs
+
+heroku config:set \
+  SALESFORCE_USERNAME=mmm@mmm.mmm \
+  SALESFORCE_PASSWORD=nnnnnttttt \
+  VERBOSE=true \
+  PLUGIN_NAMES=console-output,kafka-output \
+  SELECT_SOBJECTS=Account \
+  READ_MODE=changes
+
+# To use `READ_MODE=changes` or `all`
+heroku addons:create heroku-redis:premium-0
+
+# To use `PLUGIN_NAMES=kafka-output`
+heroku addons:create heroku-kafka:basic-0
+
+git push heroku master
+```
+
 Usage
 -----
 

@@ -1,0 +1,3 @@
+cmake
+flex
+libboost-all-dev
