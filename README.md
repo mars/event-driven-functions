@@ -170,7 +170,7 @@ KAFKA_CLIENT_CERT=yyyyy
 KAFKA_CLIENT_CERT_KEY=zzzzz
 ```
 
-The `KAFKA_*_CERT` values must be written to eponymous files in `tmp/env/`.
+The `KAFKA_*_CERT` values must be written to eponymous files in `tmp/env/`. For Heroku deployment, this is automated by the [`.profile` script](.profile).
 
 Additionally, the topic to push change messages to is `salesforce-cdc` by default, or set your on custom topic name with:
 
@@ -181,7 +181,7 @@ OUTPUT_KAFKA_TOPIC=aaaaa
 Before attempting to output to Kafka, create this topic in Heroku Kafka:
 
 ```bash
-salesforce-cdc
+heroku kafka:topics:create salesforce-cdc --partitions 5
 ```
 
 Sample command:
