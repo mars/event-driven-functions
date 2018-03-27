@@ -1,13 +1,13 @@
 # Salesforce Data Connector
 
-Receive data from a Salesforce org: schemas, bulk records, and CDC (change data capture) streams.
+Receive data from a Salesforce org: schemas, bulk records, CDC (change data capture) streams, and Platform Events.
 
 💻👩‍🔬 *This project is a exploration into solving emerging use-cases for Salesforce data.*
 
 Architecture
 ------------
 
-A reactive streaming provider of Salesforce schema, data, and ongoing changes.
+A reactive streaming provider of Salesforce schema, data, changes, and events.
 
 ### Processes
 
@@ -50,6 +50,17 @@ A reactive streaming provider of Salesforce schema, data, and ongoing changes.
     ```
 
   `content` contains CDC event data.
+* **Event**
+
+    ```json
+    {
+      "type": "event",
+      "object": "/event/PreApproval_Query__e",
+      "content": { }
+    }
+    ```
+
+  `content` contains Platform Event data.
 
 
 Requirements
@@ -119,7 +130,7 @@ SALESFORCE_USERNAME=mmm@mmm.mmm
 SALESFORCE_PASSWORD=nnnnnttttt
 ```
 
-### Output to console
+### Output CDC messages to console
 
 Sample command:
 
@@ -129,6 +140,18 @@ node lib/exec
 ```
 
 🔁 *This command runs continuously, listening for change events.*
+
+### Output Platform Events to console
+
+Sample command:
+
+```bash
+READ_MODE=changes \
+OBSERVE_TOPIC_NAME=/event/PreApproval_Query__e \
+node lib/exec
+```
+
+🔁 *This command runs continuously, listening for the Platform Event.*
 
 ### Output to Parquet (on S3)
 
@@ -228,7 +251,7 @@ Performed based on environment variables. Either of the following authentication
   * one of three values
     * `records` for sObject schemas and bulk queries
       * *process will exit when compete*
-    * `changes` for CDC (change data capture) streams
+    * `changes` for streams (CDC [change data capture] or Platform Events)
     * `all` for both records & changes
   * example: `READ_MODE=records`
   * default value: `all`
@@ -236,6 +259,11 @@ Performed based on environment variables. Either of the following authentication
   * location to write output files
   * example: `OUTPUT_PATH=~/salesforce-data-connector`
   * default value: `tmp/`
+* `OBSERVE_TOPIC_NAME`
+  * effective when `READ_MODE=changes` or `all`
+  * the path part of a Streaming API URL
+  * example: `OBSERVE_TOPIC_NAME=/event/PreApproval_Query__e`
+  * default value: `/data/ChangeEvents` (CDC firehose)
 * `REDIS_URL`
   * connection config to Redis datastore
   * required for *changes* stream, when `READ_MODE=all` or `changes`
