@@ -307,6 +307,7 @@ function friendlyName(
   schemaAndRecordsObservable,  // Rx.Observable (the data stream source)
   changeDataCaptureObservable, // Rx.Observable (the data stream source)
   env,                         // object containing current environment variables
+  salesforceApi,               // the authenticated jsForce connection
   logger                       // (optional) Function: call with log messages, default no-op
 )
 ```
