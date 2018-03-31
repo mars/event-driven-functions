@@ -204,6 +204,10 @@ OUTPUT_KAFKA_TOPIC=aaaaa
 Before attempting to output to Kafka, create this topic in Heroku Kafka:
 
 ```bash
+# The CLI plugin must be installed before first use.
+heroku plugins:install heroku-kafka
+
+# Create the topic.
 heroku kafka:topics:create salesforce-cdc --partitions 5
 ```
 
@@ -214,6 +218,12 @@ PLUGIN_NAMES=console-output,kafka-output \
 SOBJECT_NAMES=Account \
 READ_MODE=changes \
 node lib/exec
+```
+
+To see live message flow in another terminal, tail the Kafka topic:
+
+```
+heroku kafka:topics:tail salesforce-cdc
 ```
 
 
