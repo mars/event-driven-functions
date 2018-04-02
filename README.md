@@ -310,7 +310,7 @@ When this app runs, it will try to load each plugin specified in the `PLUGIN_NAM
   * The `salesforce-data-connector-plugin-` name prefix is required in the package name
   * For a plugin named `example`, the npm package must be named `salesforce-data-connector-plugin-example`.
 
-#### Observe function signature
+#### `observe` function signature
 
 ```javascript
 function friendlyName(
@@ -319,8 +319,10 @@ function friendlyName(
   env,                         // object containing current environment variables
   salesforceApi,               // the authenticated jsForce connection
   logger                       // (optional) Function: call with log messages, default no-op
-)
+) → Promise
 ```
+
+When the observe function returns a Promise, the initializer will wait to proceed until resolved or exit the process upon reject.
 
 Testing
 -------
