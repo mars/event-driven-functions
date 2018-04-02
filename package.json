@@ -1,5 +1,5 @@
 {
-  "name": "salesforce-cdc-connector",
+  "name": "salesforce-data-connector",
   "version": "1.0.0",
   "description": "Receive data from a Salesforce org in a durable, continuous flow.",
   "main": "index.js",
