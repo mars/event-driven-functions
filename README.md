@@ -22,7 +22,7 @@ A reactive streaming provider of Salesforce schema, data, changes, and events.
     ```json
     {
       "type": "schema",
-      "object": "Account",
+      "name": "Account",
       "content": { }
     }
     ```
@@ -33,7 +33,7 @@ A reactive streaming provider of Salesforce schema, data, changes, and events.
     ```json
     {
       "type": "records",
-      "object": "Account",
+      "name": "Account",
       "content": [ ]
     }
     ```
@@ -44,7 +44,7 @@ A reactive streaming provider of Salesforce schema, data, changes, and events.
     ```json
     {
       "type": "change",
-      "object": "Account",
+      "name": "Account",
       "content": { }
     }
     ```
@@ -55,12 +55,24 @@ A reactive streaming provider of Salesforce schema, data, changes, and events.
     ```json
     {
       "type": "event",
-      "object": "/event/PreApproval_Query__e",
+      "name": "/event/PreApproval_Query__e",
       "content": { }
     }
     ```
 
   `content` contains Platform Event data.
+* **Kafka message**
+
+    ```json
+    {
+      "type": "kafka",
+      "name": "create_PreApproval_Result__e",
+      "content": { },
+      "commit": function() {}
+    }
+    ```
+
+  `content` contains Kafka message data, and `commit` contains a callback function to explicitly commit receipt of each individual message for the consumer group.
 
 
 Requirements
@@ -100,6 +112,7 @@ heroku config:set \
   SALESFORCE_PASSWORD=nnnnnttttt \
   VERBOSE=true \
   PLUGIN_NAMES=console-output,kafka-output \
+  OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents \
   SELECT_SOBJECTS=Account \
   READ_MODE=changes
 
@@ -135,7 +148,8 @@ SALESFORCE_PASSWORD=nnnnnttttt
 Sample command:
 
 ```bash
-SOBJECT_NAMES=Account,Contact,Lead,Opportunity \
+READ_MODE=changes \
+OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents \
 node lib/exec
 ```
 
@@ -147,7 +161,7 @@ Sample command:
 
 ```bash
 READ_MODE=changes \
-OBSERVE_TOPIC_NAME=/event/PreApproval_Query__e \
+OBSERVE_SALESFORCE_TOPIC_NAME=/event/PreApproval_Query__e \
 node lib/exec
 ```
 
@@ -167,9 +181,9 @@ BUCKET_NAME=aaaaa
 Sample command:
 
 ```bash
-PLUGIN_NAMES=console-output,parquet-output \
-SOBJECT_NAMES=Product2,Pricebook2 \
 READ_MODE=records \
+PLUGIN_NAMES=console-output,parquet-output \
+SELECT_SOBJECTS=Product2,Pricebook2 \
 node lib/exec
 ```
 
@@ -195,10 +209,10 @@ KAFKA_CLIENT_CERT_KEY=zzzzz
 
 The `KAFKA_*_CERT` values must be written to eponymous files in `tmp/env/`. For Heroku deployment, this is automated by the [`.profile` script](.profile).
 
-Additionally, the topic to push change messages to is `salesforce-cdc` by default, or set your on custom topic name with:
+Additionally, the topic to push change messages to is `salesforce-data-connector` by default, or set your on custom topic name with:
 
 ```
-OUTPUT_KAFKA_TOPIC=aaaaa
+PRODUCE_KAFKA_TOPIC_NAME=aaaaa
 ```
 
 Before attempting to output to Kafka, create this topic in Heroku Kafka:
@@ -208,22 +222,24 @@ Before attempting to output to Kafka, create this topic in Heroku Kafka:
 heroku plugins:install heroku-kafka
 
 # Create the topic.
-heroku kafka:topics:create salesforce-cdc --partitions 5
+heroku kafka:topics:create salesforce-data-connector --partitions 5
+heroku kafka:consumer-groups:create salesforce-data-connector
 ```
 
 Sample command:
 
 ```bash
-PLUGIN_NAMES=console-output,kafka-output \
-SOBJECT_NAMES=Account \
 READ_MODE=changes \
+PLUGIN_NAMES=console-output,kafka-output \
+OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents \
+SELECT_SOBJECTS=Account \
 node lib/exec
 ```
 
 To see live message flow in another terminal, tail the Kafka topic:
 
 ```
-heroku kafka:topics:tail salesforce-cdc
+heroku kafka:topics:tail salesforce-data-connector
 ```
 
 
@@ -269,16 +285,20 @@ Performed based on environment variables. Either of the following authentication
   * location to write output files
   * example: `OUTPUT_PATH=~/salesforce-data-connector`
   * default value: `tmp/`
-* `OBSERVE_TOPIC_NAME`
+* `OBSERVE_SALESFORCE_TOPIC_NAME`
   * effective when `READ_MODE=changes` or `all`
   * the path part of a Streaming API URL
-  * example: `OBSERVE_TOPIC_NAME=/event/PreApproval_Query__e`
-  * default value: `/data/ChangeEvents` (CDC firehose)
+  * example: `OBSERVE_SALESFORCE_TOPIC_NAME=/event/PreApproval_Query__e`
+  * default value: no Salesforce observer
+* `CONSUME_KAFKA_TOPIC_NAME`
+  * effective when `READ_MODE=changes` or `all`
+  * example: `CONSUME_KAFKA_TOPIC_NAME=create_PreApproval_Result__e`
+  * default value: unset, no Kafka consumer
 * `REDIS_URL`
   * connection config to Redis datastore
   * required for *changes* stream, when `READ_MODE=all` or `changes`
   * example: `REDIS_URL=redis://localhost:6379`
-  * default: unset
+  * default: unset, no Redis
 * `REPLAY_ID`
   * force a specific replayId for CDC streaming
   * ensure to unset this after usage to prevent the stream from sticking
@@ -315,7 +335,7 @@ When this app runs, it will try to load each plugin specified in the `PLUGIN_NAM
 ```javascript
 function friendlyName(
   schemaAndRecordsObservable,  // Rx.Observable (the data stream source)
-  changeDataCaptureObservable, // Rx.Observable (the data stream source)
+  eventsObservable,            // Rx.Observable (the data stream source)
   env,                         // object containing current environment variables
   salesforceApi,               // the authenticated jsForce connection
   logger                       // (optional) Function: call with log messages, default no-op
