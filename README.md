@@ -7,7 +7,7 @@ Receive data from a Salesforce org: schemas, bulk records, CDC (change data capt
 Latest Changes
 --------------
 
-Since [v1.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v1.0.0):
+From [v1.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v1.0.0) → [v2.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v2.0.0):
 
 * Internal Rx messages
   * ✅ new type added: `kafka`, including `commit` callback
@@ -18,7 +18,7 @@ Since [v1.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v1
   * 💢 default removed; set with: `OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents`
   * 💢 renamed: `SOBJECT_NAMES` → `SOBJECT_NAMES`
 * Kafka
-  * 💢 default topic renamed: `salesforce-data-connector` → `salesforce-cdc-connector`
+  * 💢 default topic renamed: `salesforce-cdc-connector` → `salesforce-data-connector`
 * Node modules
   * 💢 top-level export renamed: `observe` → `salesforceObserver`
 
