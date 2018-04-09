@@ -4,16 +4,29 @@ Receive data from a Salesforce org: schemas, bulk records, CDC (change data capt
 
 💻👩‍🔬 *This project is a exploration into solving emerging use-cases for Salesforce data.*
 
+Latest Changes
+--------------
+
+Since [v1.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v1.0.0):
+
+* Internal Rx messages
+  * ✅ new type added: `kafka`, including `commit` callback
+  * 💢 property renamed: `object` → `name`
+* Environment variables
+  * ✅ added: `CONSUME_KAFKA_TOPIC_NAME`
+  * 💢 renamed: `OBSERVE_TOPIC_NAME` → `OBSERVE_SALESFORCE_TOPIC_NAME`
+  * 💢 default removed; set with: `OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents`
+  * 💢 renamed: `SOBJECT_NAMES` → `SOBJECT_NAMES`
+* Kafka
+  * 💢 default topic renamed: `salesforce-data-connector` → `salesforce-cdc-connector`
+* Node modules
+  * 💢 top-level export renamed: `observe` → `salesforceObserver`
+
+
 Architecture
 ------------
 
-A reactive streaming provider of Salesforce schema, data, changes, and events.
-
-### Processes
-
-1. Authenticate with Salesforce API
-1. Push messages from CDC firehose
-1. Push message for each sObject's schema & existing records
+A reactive streaming provider of Salesforce schema, data, changes, events, and Kafka messages.
 
 ### Internal Message Types
 
