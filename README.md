@@ -16,7 +16,7 @@ From [v1.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v1.
   * ✅ added: `CONSUME_KAFKA_TOPIC_NAME`
   * 💢 renamed: `OBSERVE_TOPIC_NAME` → `OBSERVE_SALESFORCE_TOPIC_NAME`
   * 💢 default removed; set with: `OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents`
-  * 💢 renamed: `SOBJECT_NAMES` → `SOBJECT_NAMES`
+  * 💢 renamed: `SOBJECT_NAMES` → `SELECT_SOBJECTS`
 * Kafka
   * 💢 default topic renamed: `salesforce-cdc-connector` → `salesforce-data-connector`
 * Node modules
