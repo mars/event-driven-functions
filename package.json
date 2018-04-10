@@ -1,10 +1,10 @@
 {
-  "name": "salesforce-data-connector",
+  "name": "event-driven-functions",
   "version": "1.0.0",
-  "description": "Receive data from a Salesforce org in a durable, continuous flow.",
+  "description": "Invoke javascript functions in a Heroku app via Salesforce Platform Events",
   "main": "index.js",
   "engines": {
-    "node": "8.9.x"
+    "node": "8.11.x"
   },
   "scripts": {
     "test": "`npm bin`/ava **/*-test.js",
@@ -13,23 +13,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heroku/salesforce-data-connector.git"
+    "url": "git+https://github.com/heroku/event-driven-functions.git"
   },
   "author": "mars.hall@salesforce.com",
   "bugs": {
-    "url": "https://github.com/heroku/salesforce-data-connector/issues"
+    "url": "https://github.com/heroku/event-driven-functions/issues"
   },
-  "homepage": "https://github.com/heroku/salesforce-data-connector#readme",
+  "homepage": "https://github.com/heroku/event-driven-functions#readme",
   "dependencies": {
     "dotenv": "^4.0.0",
     "episode-7": "^1.1.1",
     "jsforce": "git+https://github.com/heroku/jsforce.git#add-stream-replay-support",
     "jsforce-connection": "^2.1.0",
     "knox": "git+https://github.com/caremerge/knox.git",
-    "node-parquet": "^0.2.6",
     "node-rdkafka": "^2.3.1",
     "redis": "^2.8.0",
-    "rxjs": "^5.5.2"
+    "rxjs": "^5.5.2",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "ava": "^0.25.0",
