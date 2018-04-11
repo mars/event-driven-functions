@@ -90,17 +90,38 @@ Usage
 ### First time setup
 
 ```bash
+git clone https://github.com/heroku/event-driven-functions.git
+cd event-driven-functions/
 npm install
 cp .env.sample .env
 ```
 
-Then, update `.env` file with config values for auth & debugging:
+### Salesforce setup
+
+Next, we'll use [`sfdx`](https://developer.salesforce.com/docs/atlas.en-us.212.0.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm) to deploy the Salesforce customizations. If you don't yet have access to a Dev Hub org, or this is your first time using `sfdx`, then see [**Setup Salesforce DX** in Trailhead](https://trailhead.salesforce.com/trails/sfdx_get_started/modules/sfdx_app_dev/units/sfdx_app_dev_setup_dx).
+
+Deploy the included `force-app` code to a scratch org:
+
+```bash
+sfdx force:org:create -s -f config/project-scratch-def.json -a EventDrivenFunctions
+sfdx force:source:push
+sfdx force:user:permset:assign -n Heroku_Function_Generate_UUID
+```
+
+View the scratch org description:
+
+```bash
+sfdx force:user:display
+```
+
+Then, update `.env` file with the **Instance Url** & **Access Token** values from the scratch org description:
 
 ```
-VERBOSE=true
-SALESFORCE_USERNAME=mmm@mmm.mmm
-SALESFORCE_PASSWORD=nnnnnttttt
+SALESFORCE_INSTANCE_URL=xxxxx
+SALESFORCE_ACCESS_TOKEN=yyyyy
 ```
+
+⚠️ *Scratch orgs and their authorizations expire, so this setup may need to be repeated whenever beginning local development work. View the current status of the orgs with `sfdx force:org:list`.*
 
 ### Run locally
 
