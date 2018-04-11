@@ -5,3 +5,4 @@
 metastore_db/
 dump.rdb
 tmp/*
+.sfdx/orgs/
