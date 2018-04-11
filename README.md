@@ -267,7 +267,16 @@ Performed based on environment variables. Either of the following authentication
   * `SALESFORCE_USERNAME`
   * `SALESFORCE_PASSWORD` (password+securitytoken)
   * `SALESFORCE_LOGIN_URL` (optional; defaults to **login.salesforce.com**)
-* OAuth tokens
+* Existing OAuth token
+  * `SALESFORCE_INSTANCE_URL`
+  * `SALESFORCE_ACCESS_TOKEN`
+  * Retrieve from an sfdx scratch org with:
+
+    ```bash
+    sfdx force:org:create -s -f config/project-scratch-def.json -a SalesforceDataConnector
+    sfdx force:org:display
+    ```
+* OAuth client
   * `SALESFORCE_URL`
     * *Must include oAuth client ID, secret, & refresh token*
     * Example: `force://{client-id}:{secret}:{refresh-token}@{instance-name}.salesforce.com`
