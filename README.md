@@ -21,6 +21,8 @@ These functions are composed in a Heroku app. Each function's arguments, return 
 
 ### Example: UUID generator for any Salesforce Object
 
+This app is based on [salesforce-data-connector](https://github.com/heroku/salesforce-data-connector); implemented as an [observer plugin](https://github.com/heroku/event-driven-functions/blob/master/lib/plugin-generate-uuid.js) to salesforce-data-connector, along with an `sfdx` project providing the Salesforce customizations.
+
 #### Invoke event
 
 Salesforce Platform Event `Heroku_Function_Generate_UUID_Invoke__e`
@@ -55,34 +57,6 @@ Requirements
 
 * [Node.js](https://nodejs.org/) 8.11 with npm 5
 * [redis](https://redis.io)
-
-Install
--------
-
-1. Clone or fork this repo.
-1. `cd event-driven-functions/` (or whatever you named the repo's directory)
-1. `npm install`
-
-Deploy
-------
-
-```bash
-heroku create
-
-heroku config:set \
-  SALESFORCE_USERNAME=mmm@mmm.mmm \
-  SALESFORCE_PASSWORD=nnnnnttttt \
-  VERBOSE=true \
-  PLUGIN_NAMES=console-output,generate-uuid \
-  OBSERVE_SALESFORCE_TOPIC_NAMES=/event/Heroku_Function_Generate_UUID_Invoke__e \
-  RETURN_UUID_EVENT_NAME=Heroku_Function_Generate_UUID_Return__e \
-  READ_MODE=changes
-
-heroku addons:create heroku-redis:premium-0
-heroku addons:create heroku-kafka:basic-0
-
-git push heroku master
-```
 
 Usage
 -----
@@ -208,12 +182,6 @@ Performed based on environment variables. Either of the following authentication
   * example: `REPLAY_ID=5678` (or `-2` for all possible events)
   * default: unset, receive all new events
 
-
-Local development
------------------
-
-Set configuration values in a `.env` file based on `.env.sample`.
-
 Testing
 -------
 
@@ -232,3 +200,27 @@ Implemented with [AVA](https://github.com/avajs/ava), concurrent test runner.
 * `npm run test:integration`
 * Defined in `test/`
 * Salesforce API calls are live 🚨
+
+
+Deploy
+------
+
+🚧 *Salesforce packaging & deployment is not yet complete.*
+
+```bash
+heroku create
+
+heroku config:set \
+  SALESFORCE_USERNAME=mmm@mmm.mmm \
+  SALESFORCE_PASSWORD=nnnnnttttt \
+  VERBOSE=true \
+  PLUGIN_NAMES=generate-uuid \
+  OBSERVE_SALESFORCE_TOPIC_NAME=/event/Heroku_Function_Generate_UUID_Invoke__e \
+  RETURN_UUID_EVENT_NAME=Heroku_Function_Generate_UUID_Return__e \
+  READ_MODE=changes
+
+heroku addons:create heroku-redis:premium-0
+heroku addons:create heroku-kafka:basic-0
+
+git push heroku master
+```
