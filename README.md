@@ -215,7 +215,7 @@ heroku config:set \
   SALESFORCE_PASSWORD=nnnnnttttt \
   VERBOSE=true \
   PLUGIN_NAMES=generate-uuid \
-  OBSERVE_SALESFORCE_TOPIC_NAME=/event/Heroku_Function_Generate_UUID_Invoke__e \
+  OBSERVE_SALESFORCE_TOPIC_NAMES=/event/Heroku_Function_Generate_UUID_Invoke__e \
   RETURN_UUID_EVENT_NAME=Heroku_Function_Generate_UUID_Return__e \
   READ_MODE=changes
 
