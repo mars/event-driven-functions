@@ -4,8 +4,6 @@ Invoke javascript functions in a [Heroku app](https://www.heroku.com/platform) v
 
 💻👩‍🔬 *This project is a exploration into an emerging pattern for extending the compute capabilities of Salesforce.*
 
-🔗 Forked from [salesforce-data-connector](https://github.com/heroku/salesforce-data-connector).
-
 Design
 ------
 
@@ -19,9 +17,15 @@ This flow maps specific **Invoke events** (topics) to function calls that return
 
 These functions are composed in a Heroku app. Each function's arguments, return values, and their types must be encoded in the Invoke and Return events' fields.
 
-### Example: UUID generator for any Salesforce Object
+Architecture
+------------
 
-This app is based on [salesforce-data-connector](https://github.com/heroku/salesforce-data-connector); implemented as an [observer plugin](https://github.com/heroku/event-driven-functions/blob/master/lib/plugin-generate-uuid.js) to salesforce-data-connector, along with an `sfdx` project providing the Salesforce customizations.
+🔗 Forked from [salesforce-data-connector](https://github.com/heroku/salesforce-data-connector).
+
+This event-driven functions app is an [observer plugin](https://github.com/heroku/event-driven-functions/blob/master/lib/plugin-invoke-functions.js) to **salesforce-data-connector**, along with an `sfdx` project providing the Salesforce customizations.
+
+Example: UUID generator for any Salesforce Object
+-------------------------------------------------
 
 #### Invoke event
 
@@ -101,13 +105,41 @@ SALESFORCE_ACCESS_TOKEN=yyyyy
 
 ```bash
 READ_MODE=changes \
-PLUGIN_NAMES=generate-uuid \
+PLUGIN_NAMES=invoke-functions \
 OBSERVE_SALESFORCE_TOPIC_NAMES=/event/Heroku_Function_Generate_UUID_Invoke__e \
-RETURN_UUID_EVENT_NAME=Heroku_Function_Generate_UUID_Return__e \
 node lib/exec
 ```
 
 🔁 *This command runs continuously, listening for the Platform Event.*
+
+### Developing more functions
+
+For a given function, three identifiers are used.
+
+* **Function Name**
+  * example `Generate_UUID`
+  * used for the JavaScript module file & its `functions` export
+* **Invoke Event Name**
+  * example `Heroku_Function_Generate_UUID_Invoke__e`
+  * used for the Platform Event that runs the function
+* **Return Event Name**
+  * example `Heroku_Function_Generate_UUID_Return__e`
+  * used for the Platform Event that receives the function's result
+
+Note: the **Function Name** must be embedded exactly in both **Event Names**.
+
+To implement a new function:
+
+1. create the new Platform Events using `sfdx` workflow
+   * develop in a scratch org and pull changes into this repo
+   * define each **Invoke & Return Event** and its schema (fields & their types)
+   * define a new **Permission Set** for access or add to an existing Set
+1. create the function as a default export in `lib/functions/`
+   * use **Function Name** for the module file & its `functions` export
+   * the function receives the Invoke event's payload and must honor the Return event's schema
+   * see: [example `Generate_UUID.js`](lib/functions/Generate_UUID.js) & [the export](lib/functions/index.js)
+1. include the new Invoke Event Name in `OBSERVE_SALESFORCE_TOPIC_NAMES` env var
+   * example: `OBSERVE_SALESFORCE_TOPIC_NAMES=/event/Heroku_Function_Generate_UUID_Invoke__e,/event/Heroku_Function_Generate_Haiku_Invoke__e`
 
 Configuration
 -------------
@@ -214,9 +246,8 @@ heroku config:set \
   SALESFORCE_USERNAME=mmm@mmm.mmm \
   SALESFORCE_PASSWORD=nnnnnttttt \
   VERBOSE=true \
-  PLUGIN_NAMES=generate-uuid \
+  PLUGIN_NAMES=invoke-functions \
   OBSERVE_SALESFORCE_TOPIC_NAMES=/event/Heroku_Function_Generate_UUID_Invoke__e \
-  RETURN_UUID_EVENT_NAME=Heroku_Function_Generate_UUID_Return__e \
   READ_MODE=changes
 
 heroku addons:create heroku-redis:premium-0
