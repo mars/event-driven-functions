@@ -7,6 +7,12 @@ Receive data from a Salesforce org: schemas, bulk records, CDC (change data capt
 Latest Changes
 --------------
 
+From [v2.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v2.0.0) → [v3.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v3.0.0):
+
+* Environment variables
+  * 💢 renamed, pluralized: `OBSERVE_SALESFORCE_TOPIC_NAME` → `OBSERVE_SALESFORCE_TOPIC_NAMES`
+  * 💢 renamed, pluralized: `CONSUME_KAFKA_TOPIC_NAME` → `CONSUME_KAFKA_TOPIC_NAMES`
+
 From [v1.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v1.0.0) → [v2.0](https://github.com/heroku/salesforce-data-connector/releases/tag/v2.0.0):
 
 * Internal Rx messages
@@ -125,7 +131,7 @@ heroku config:set \
   SALESFORCE_PASSWORD=nnnnnttttt \
   VERBOSE=true \
   PLUGIN_NAMES=console-output,kafka-output \
-  OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents \
+  OBSERVE_SALESFORCE_TOPIC_NAMES=/data/ChangeEvents \
   SELECT_SOBJECTS=Account \
   READ_MODE=changes
 
@@ -162,7 +168,7 @@ Sample command:
 
 ```bash
 READ_MODE=changes \
-OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents \
+OBSERVE_SALESFORCE_TOPIC_NAMES=/data/ChangeEvents \
 node lib/exec
 ```
 
@@ -174,7 +180,19 @@ Sample command:
 
 ```bash
 READ_MODE=changes \
-OBSERVE_SALESFORCE_TOPIC_NAME=/event/PreApproval_Query__e \
+OBSERVE_SALESFORCE_TOPIC_NAMES=/event/PreApproval_Query__e \
+node lib/exec
+```
+
+🔁 *This command runs continuously, listening for the Platform Event.*
+
+### Output Kafka messages to console
+
+Sample command:
+
+```bash
+READ_MODE=changes \
+CONSUME_KAFKA_TOPIC_NAMES=salesforce-data-connector \
 node lib/exec
 ```
 
@@ -244,7 +262,7 @@ Sample command:
 ```bash
 READ_MODE=changes \
 PLUGIN_NAMES=console-output,kafka-output \
-OBSERVE_SALESFORCE_TOPIC_NAME=/data/ChangeEvents \
+OBSERVE_SALESFORCE_TOPIC_NAMES=/data/ChangeEvents \
 SELECT_SOBJECTS=Account \
 node lib/exec
 ```
@@ -270,7 +288,7 @@ Performed based on environment variables. Either of the following authentication
 * Existing OAuth token
   * `SALESFORCE_INSTANCE_URL`
   * `SALESFORCE_ACCESS_TOKEN`
-  * Retrieve from an sfdx scratch org with:
+  * Retrieve from an [sfdx](https://developer.salesforce.com/docs/atlas.en-us.212.0.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm) scratch org with:
 
     ```bash
     sfdx force:org:create -s -f config/project-scratch-def.json -a SalesforceDataConnector
@@ -307,14 +325,16 @@ Performed based on environment variables. Either of the following authentication
   * location to write output files
   * example: `OUTPUT_PATH=~/salesforce-data-connector`
   * default value: `tmp/`
-* `OBSERVE_SALESFORCE_TOPIC_NAME`
+* `OBSERVE_SALESFORCE_TOPIC_NAMES`
   * effective when `READ_MODE=changes` or `all`
   * the path part of a Streaming API URL
-  * example: `OBSERVE_SALESFORCE_TOPIC_NAME=/event/PreApproval_Query__e`
+  * a comma-delimited list
+  * example: `OBSERVE_SALESFORCE_TOPIC_NAMES=/event/PreApproval_Query__e`
   * default value: no Salesforce observer
-* `CONSUME_KAFKA_TOPIC_NAME`
+* `CONSUME_KAFKA_TOPIC_NAMES`
   * effective when `READ_MODE=changes` or `all`
-  * example: `CONSUME_KAFKA_TOPIC_NAME=create_PreApproval_Result__e`
+  * a comma-delimited list
+  * example: `CONSUME_KAFKA_TOPIC_NAMES=create_PreApproval_Result__e`
   * default value: unset, no Kafka consumer
 * `REDIS_URL`
   * connection config to Redis datastore
