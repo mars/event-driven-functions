@@ -252,11 +252,27 @@ Now, pull the Salesforce customizations back out of the scratch org in the Metad
 
 ```bash
 sfdx force:source:convert --outputdir mdapi_output_dir --packagename Event_Driven_Functions_Generate_UUID
+```
 
+Login to the packaging org and create the Beta package:
+
+```bash
 sfdx force:org:list
 sfdx force:auth:web:login -u PkgFunctions
 
 sfdx force:mdapi:deploy --deploydir mdapi_output_dir --targetusername PkgFunctions
+
+# Find the package ID in the URL of the packaging org:
+#   Setup → Package Manager → View/Edit the Package
+sfdx force:package1:version:create --packageid 033f4000000E0FJ --name r00000 -u PkgFunctions
+
+sfdx force:package1:version:list -u PkgFunctions
+```
+
+Install the beta package into another org by its `METADATAPACKAGEVERSIONID`:
+
+```bash
+sfdx force:package:install --id 04tf4000001ft0KAAQ -u OctoDevEd
 ```
 
 
