@@ -82,7 +82,10 @@ Deploy the included `force-app` code to a scratch org:
 
 ```bash
 sfdx force:org:create -s -f config/project-scratch-def.json -a EventDrivenFunctions
+
 sfdx force:source:push
+# …if errors are reported for some components, push again.
+
 sfdx force:user:permset:assign -n Heroku_Function_Generate_UUID
 ```
 
@@ -158,7 +161,7 @@ Performed based on environment variables. Either of the following authentication
   * Retrieve from an [sfdx](https://developer.salesforce.com/docs/atlas.en-us.212.0.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm) scratch org with:
 
     ```bash
-    sfdx force:org:create -s -f config/project-scratch-def.json -a SalesforceDataConnector
+    sfdx force:org:create -s -f config/project-scratch-def.json -a EventDrivenFunctions
     sfdx force:org:display
     ```
 * OAuth client
@@ -234,10 +237,30 @@ Implemented with [AVA](https://github.com/avajs/ava), concurrent test runner.
 * Salesforce API calls are live 🚨
 
 
-Deploy
-------
+Deployment
+----------
+
+### Deploy Salesforce components
 
 🚧 *Salesforce packaging & deployment is not yet complete.*
+
+Follow [Build and Release Your App with Managed Packages](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_build_man_pack.htm) to prepare a packaging org and [link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm).
+
+Set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).
+
+Now, pull the Salesforce customizations back out of the scratch org in the Metadata API format:
+
+```bash
+sfdx force:source:convert --outputdir mdapi_output_dir --packagename Event_Driven_Functions_Generate_UUID
+
+sfdx force:org:list
+sfdx force:auth:web:login -u PkgFunctions
+
+sfdx force:mdapi:deploy --deploydir mdapi_output_dir --targetusername PkgFunctions
+```
+
+
+### Deploy Heroku app
 
 ```bash
 heroku create

@@ -6,3 +6,4 @@ metastore_db/
 dump.rdb
 tmp/*
 .sfdx/orgs/
+mdapi_output_dir/
