@@ -298,4 +298,6 @@ heroku addons:create heroku-redis:premium-0
 heroku addons:create heroku-kafka:basic-0
 
 git push heroku master
+
+heroku ps:scale web=0:Standard-1x worker=1:Standard-1x
 ```
