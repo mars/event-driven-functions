@@ -103,6 +103,14 @@ SALESFORCE_ACCESS_TOKEN=yyyyy
 
 ### Run locally
 
+Open the scratch org Accounts:
+
+```bash
+sfdx force:org:open --path one/one.app#/sObject/Account/list
+```
+
+Run this `node` command in a shell terminal:
+
 ```bash
 READ_MODE=changes \
 PLUGIN_NAMES=invoke-functions \
@@ -111,6 +119,8 @@ node lib/exec
 ```
 
 🔁 *This command runs continuously, listening for the Platform Event.*
+
+▶️ Watch this command's output as you open it in Salesforce and create or edit accounts:
 
 ### Developing more functions
 
@@ -158,7 +168,7 @@ Performed based on environment variables. Either of the following authentication
   * Retrieve from an [sfdx](https://developer.salesforce.com/docs/atlas.en-us.212.0.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm) scratch org with:
 
     ```bash
-    sfdx force:org:create -s -f config/project-scratch-def.json -a SalesforceDataConnector
+    sfdx force:org:create -s -f config/project-scratch-def.json -a EventDrivenFunctions
     sfdx force:org:display
     ```
 * OAuth client
@@ -234,10 +244,44 @@ Implemented with [AVA](https://github.com/avajs/ava), concurrent test runner.
 * Salesforce API calls are live 🚨
 
 
-Deploy
-------
+Deployment
+----------
 
-🚧 *Salesforce packaging & deployment is not yet complete.*
+### Deploy Salesforce components
+
+Follow [Build and Release Your App with Managed Packages](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_build_man_pack.htm) to prepare a packaging org.
+
+Diverging from those directions, we'll prepare an unmanaged package without a namespace. We have to skip namespacing for now, because of a [problem with Process Builder + Platform Events embedding namespaces in the metadata](#user-content-push-to-scratch-org-error). <del>[Link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm), and set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).</del>
+
+Now, pull the Salesforce customizations back out of the scratch org in the Metadata API format:
+
+```bash
+sfdx force:source:convert --outputdir mdapi_output_dir --packagename Event_Driven_Functions_Generate_UUID
+```
+
+Login to the packaging org and create the Beta package:
+
+```bash
+sfdx force:org:list
+sfdx force:auth:web:login -a PkgFunctions
+
+sfdx force:mdapi:deploy --deploydir mdapi_output_dir --targetusername PkgFunctions
+
+# Find the package ID in the URL of the packaging org:
+#   Setup → Package Manager → View/Edit the Package
+sfdx force:package1:version:create --packageid 033f40000009lqP --name r00000 -u PkgFunctions
+
+sfdx force:package1:version:list -u PkgFunctions
+```
+
+Install the beta package into another org by its `METADATAPACKAGEVERSIONID`:
+
+```bash
+sfdx force:package:install --id 04tf4000001ft4hAAA -u OctoDevEd
+```
+
+
+### Deploy Heroku app
 
 ```bash
 heroku create
@@ -254,4 +298,6 @@ heroku addons:create heroku-redis:premium-0
 heroku addons:create heroku-kafka:basic-0
 
 git push heroku master
+
+heroku ps:scale web=0:Standard-1x worker=1:Standard-1x
 ```
