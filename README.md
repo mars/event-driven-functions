@@ -106,6 +106,8 @@ SALESFORCE_ACCESS_TOKEN=yyyyy
 
 ### Run locally
 
+Run this `node` command in a shell terminal:
+
 ```bash
 READ_MODE=changes \
 PLUGIN_NAMES=invoke-functions \
@@ -114,6 +116,12 @@ node lib/exec
 ```
 
 🔁 *This command runs continuously, listening for the Platform Event.*
+
+▶️ Watch this command's output as you open it in Salesforce and create or edit accounts:
+
+```bash
+sfdx force:org:open
+```
 
 ### Developing more functions
 

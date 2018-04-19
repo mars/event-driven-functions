@@ -1,3 +1,7 @@
+Notes
+=====
+*from a first time sfdx → package installer*
+
 Linking the namespace in a Hub org
 ----------------------------------
 In the Hub org, go to Setup → App Manager.
@@ -96,3 +100,9 @@ ERROR:  Installation errors:
 1) (Set_UUID_for_Account_1) Event type PlatformLabsFn__Heroku_Function_Generate_UUID_Return__e does not exist., Details: Set_UUID_for_Account_1: Event type PlatformLabsFn__Heroku_Function_Generate_UUID_Return__e does not exist.
 2) (Set_UUID_for_Account_1) In field: EventSubscription - no EventSubscription named Set_UUID_for_Account_1 found, Details: Set_UUID_for_Account_1: In field: EventSubscription - no EventSubscription named Set_UUID_for_Account_1 found.
 ```
+
+
+Epilog
+------
+
+"If only this was as easy as npm" —a friend
