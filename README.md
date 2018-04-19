@@ -249,11 +249,9 @@ Deployment
 
 ### Deploy Salesforce components
 
-🚧 *Salesforce packaging & deployment is not yet complete.*
-
 Follow [Build and Release Your App with Managed Packages](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_build_man_pack.htm) to prepare a packaging org.
 
-<del>[Link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm), and set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).</del>
+Diverging from those directions, we'll prepare an unmanaged package without a namespace. We have to skip namespacing for now, because of a [problem with Process Builder + Platform Events embedding namespaces in the metadata](#user-content-push-to-scratch-org-error). <del>[Link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm), and set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).</del>
 
 Now, pull the Salesforce customizations back out of the scratch org in the Metadata API format:
 
@@ -265,13 +263,13 @@ Login to the packaging org and create the Beta package:
 
 ```bash
 sfdx force:org:list
-sfdx force:auth:web:login -u PkgFunctions
+sfdx force:auth:web:login -a PkgFunctions
 
 sfdx force:mdapi:deploy --deploydir mdapi_output_dir --targetusername PkgFunctions
 
 # Find the package ID in the URL of the packaging org:
 #   Setup → Package Manager → View/Edit the Package
-sfdx force:package1:version:create --packageid 033f4000000E0FJ --name r00000 -u PkgFunctions
+sfdx force:package1:version:create --packageid 033f40000009lqP --name r00000 -u PkgFunctions
 
 sfdx force:package1:version:list -u PkgFunctions
 ```
