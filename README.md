@@ -272,7 +272,7 @@ sfdx force:package1:version:list -u PkgFunctions
 Install the beta package into another org by its `METADATAPACKAGEVERSIONID`:
 
 ```bash
-sfdx force:package:install --id 04tf4000001ft0KAAQ -u OctoDevEd
+sfdx force:package:install --id 04tf4000001ft4hAAA -u OctoDevEd
 ```
 
 
