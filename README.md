@@ -82,10 +82,7 @@ Deploy the included `force-app` code to a scratch org:
 
 ```bash
 sfdx force:org:create -s -f config/project-scratch-def.json -a EventDrivenFunctions
-
 sfdx force:source:push
-# …if errors are reported for some components, push again.
-
 sfdx force:user:permset:assign -n Heroku_Function_Generate_UUID
 ```
 
@@ -106,6 +103,12 @@ SALESFORCE_ACCESS_TOKEN=yyyyy
 
 ### Run locally
 
+Open the scratch org Accounts:
+
+```bash
+sfdx force:org:open --path one/one.app#/sObject/Account/list
+```
+
 Run this `node` command in a shell terminal:
 
 ```bash
@@ -118,10 +121,6 @@ node lib/exec
 🔁 *This command runs continuously, listening for the Platform Event.*
 
 ▶️ Watch this command's output as you open it in Salesforce and create or edit accounts:
-
-```bash
-sfdx force:org:open
-```
 
 ### Developing more functions
 
@@ -252,9 +251,9 @@ Deployment
 
 🚧 *Salesforce packaging & deployment is not yet complete.*
 
-Follow [Build and Release Your App with Managed Packages](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_build_man_pack.htm) to prepare a packaging org and [link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm).
+Follow [Build and Release Your App with Managed Packages](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_build_man_pack.htm) to prepare a packaging org.
 
-Set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).
+<del>[Link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm), and set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).</del>
 
 Now, pull the Salesforce customizations back out of the scratch org in the Metadata API format:
 

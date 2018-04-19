@@ -2,7 +2,7 @@
 <EventDelivery xmlns="http://soap.sforce.com/2006/04/metadata">
     <eventParameters>
         <parameterName>FlowVersionName</parameterName>
-        <parameterValue>PlatformLabsFn__Set_UUID_for_Account-1</parameterValue>
+        <parameterValue>Set_UUID_for_Account-1</parameterValue>
     </eventParameters>
     <eventSubscription>Set_UUID_for_Account_1</eventSubscription>
     <referenceData>Set_UUID_for_Account_1</referenceData>
