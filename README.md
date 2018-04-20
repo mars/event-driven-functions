@@ -249,9 +249,18 @@ Deployment
 
 ### Deploy Salesforce components
 
+#### Example, ready-to-install package from this repo
+
+```bash
+sfdx force:auth:web:login -a AnotherOrg
+sfdx force:package:install --id 04tf4000001ft4hAAA -u AnotherOrg
+```
+
+#### Custom, package it yourself
+
 Follow [Build and Release Your App with Managed Packages](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_build_man_pack.htm) to prepare a packaging org.
 
-Diverging from those directions, we'll prepare an unmanaged package without a namespace. We have to skip namespacing for now, because of a [problem with Process Builder + Platform Events embedding namespaces in the metadata](#user-content-push-to-scratch-org-error). <del>[Link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm), and set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).</del>
+Diverging from those directions, we'll prepare an unmanaged package without a namespace. We have to skip namespacing for now, because of problems with Process Builder + Platform Events embedding namespaces in the metadata (evidence [1](NOTES.md#user-content-push-to-scratch-org-error), [2](NOTES.md#user-content-manually-pruned-package-fails-to-install)). <del>[Link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm), and set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).</del>
 
 Now, pull the Salesforce customizations back out of the scratch org in the Metadata API format:
 
@@ -269,15 +278,16 @@ sfdx force:mdapi:deploy --deploydir mdapi_output_dir --targetusername PkgFunctio
 
 # Find the package ID in the URL of the packaging org:
 #   Setup → Package Manager → View/Edit the Package
-sfdx force:package1:version:create --packageid 033f40000009lqP --name r00000 -u PkgFunctions
+sfdx force:package1:version:create --packageid XXXXX --name r00000 -u PkgFunctions
 
 sfdx force:package1:version:list -u PkgFunctions
 ```
 
-Install the beta package into another org by its `METADATAPACKAGEVERSIONID`:
+Install the beta package into another org by its id `METADATAPACKAGEVERSIONID`:
 
 ```bash
-sfdx force:package:install --id 04tf4000001ft4hAAA -u OctoDevEd
+sfdx force:auth:web:login -a AnotherOrg
+sfdx force:package:install --id YYYYY -u AnotherOrg
 ```
 
 
@@ -295,7 +305,6 @@ heroku config:set \
   READ_MODE=changes
 
 heroku addons:create heroku-redis:premium-0
-heroku addons:create heroku-kafka:basic-0
 
 git push heroku master
 
