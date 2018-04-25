@@ -2,7 +2,7 @@
 
 Invoke javascript functions in a [Heroku app](https://www.heroku.com/platform) via [Salesforce Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_define_ui.htm).
 
-💻👩‍🔬 *This project is a exploration into an emerging pattern for extending the compute capabilities of Salesforce.*
+💻👩‍🔬 *This project is a exploration into a new pattern for extending the compute capabilities of Salesforce. **Use at your own risk.***
 
 Design
 ------
@@ -20,7 +20,7 @@ These functions are composed in a Heroku app. Each function's arguments, return 
 Architecture
 ------------
 
-🔗 Forked from [salesforce-data-connector](https://github.com/heroku/salesforce-data-connector).
+🔗 [Forked from **salesforce-data-connector**](https://github.com/heroku/salesforce-data-connector), which itself uses a [fork of **jsforce**](https://github.com/jsforce/jsforce/pull/740) that supports durable consumption of the Salesforce Streaming API.
 
 This event-driven functions app is an [observer plugin](https://github.com/heroku/event-driven-functions/blob/master/lib/plugin-invoke-functions.js) to **salesforce-data-connector**, along with an `sfdx` project providing the Salesforce customizations.
 
@@ -33,11 +33,11 @@ Salesforce Platform Event `Heroku_Function_Generate_UUID_Invoke__e`
 
 ```json
 {
-  "Context_Id": "xxxxx"
+  "Context_Id__c": "xxxxx"
 }
 ```
 
-`Context_Id` should be passed-through unchanged from Invoke to Return. It provides an identifier to associate the return value with the original invocation. It is not passed in the function invocation.
+`Context_Id` should be passed-through unchanged from Invoke to Return. It provides an identifier to associate the return value with the original invocation.
 
 This is a minimal Invoke event payload with no function arguments. The event may contain as many fields as are need for the target function's arguments.
 
@@ -47,14 +47,16 @@ Salesforce Platform Event `Heroku_Function_Generate_UUID_Return__e`
 
 ```json
 {
-  "Context_Id": "xxxxx",
-  "Value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx"
+  "Context_Id__c": "xxxxx",
+  "Value__c": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx"
 }
 ```
 
-`Context_Id` should be passed-through unchanged from Invoke to Return.
+`Context_Id__c` should be passed-through unchanged from Invoke to Return.
 
-`Value` is a minimal Return event payload. In this example it contains the string UUID.
+`Value__c` is a minimal Return event payload. In this example it contains the string UUID.
+
+👓 *About the suffixes in Salesforce identifiers: `__e` is appended to Platform Event names, and `__c` is appended to custom object & field names.*
 
 Requirements
 ------------
@@ -103,7 +105,7 @@ SALESFORCE_ACCESS_TOKEN=yyyyy
 
 ### Run locally
 
-Open the scratch org Accounts:
+Open the scratch org's Accounts:
 
 ```bash
 sfdx force:org:open --path one/one.app#/sObject/Account/list
@@ -120,7 +122,7 @@ node lib/exec
 
 🔁 *This command runs continuously, listening for the Platform Event.*
 
-▶️ Watch this command's output as you open it in Salesforce and create or edit accounts:
+▶️ Watch this command's output as your create Accounts in the scratch org.
 
 ### Developing more functions
 
@@ -186,33 +188,12 @@ Performed based on environment variables. Either of the following authentication
   * configure the consumers/observers of the Salesforce data streams
   * example: `PLUGIN_NAMES=console-output,parquet-output`
   * default value: `console-output`
-* `SELECT_SOBJECTS`
-  * a comma-separated list of Salesforce objects to read
-  * example: `SELECT_SOBJECTS=Product2,Pricebook2`
-  * default value: unset, all readable objects
-* `READ_MODE`
-  * one of three values
-    * `records` for sObject schemas and bulk queries
-      * *process will exit when compete*
-    * `changes` for streams (CDC [change data capture] or Platform Events)
-    * `all` for both records & changes
-  * example: `READ_MODE=records`
-  * default value: `all`
-* `OUTPUT_PATH`
-  * location to write output files
-  * example: `OUTPUT_PATH=~/event-driven-functions`
-  * default value: `tmp/`
 * `OBSERVE_SALESFORCE_TOPIC_NAMES`
   * effective when `READ_MODE=changes` or `all`
   * the path part of a Streaming API URL
   * a comma-delimited list
   * example: `OBSERVE_SALESFORCE_TOPIC_NAMES=/event/PreApproval_Query__e`
   * default value: no Salesforce observer
-* `CONSUME_KAFKA_TOPIC_NAMES`
-  * effective when `READ_MODE=changes` or `all`
-  * a comma-delimited list
-  * example: `CONSUME_KAFKA_TOPIC_NAMES=create_PreApproval_Result__e`
-  * default value: unset, no Kafka consumer
 * `REDIS_URL`
   * connection config to Redis datastore
   * required for *changes* stream, when `READ_MODE=all` or `changes`
@@ -236,12 +217,6 @@ Implemented with [AVA](https://github.com/avajs/ava), concurrent test runner.
 * `npm run test:unit`
 * Defined in `lib/` alongside source files
 * Salesforce API calls are mocked by way of [Episode 7](https://github.com/mars/episode-7)
-
-### Integration Tests
-
-* `npm run test:integration`
-* Defined in `test/`
-* Salesforce API calls are live 🚨
 
 
 Deployment

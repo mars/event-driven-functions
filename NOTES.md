@@ -25,9 +25,7 @@ force-app/main/default/eventDeliveries/Set_UUID_for_Account_1.delivery-meta.xml 
 force-app/main/default/eventSubscriptions/Set_UUID_for_Account_1.subscription-meta.xml  Event type Heroku_Function_Generate_UUID_Return__e does not exist.
 ```
 
-These `eventDeliveries` & `eventSubscriptions` (from a Process Builder workflow) capture a reference which embed the namespace. Worked around this issue by manually prefixing the namespace `PlatformLabsFn__` to **EventDelivery/eventParameters/parameterValue** & **EventSubscription/eventType** XML element values.
-
-It surprised me that `source:pull` & `source:push` code may embed namespaces and therefore not be portable. If a globally unique namespace gets embedded into the source code, how do we share/open source code that doesn’t require folks going through a search and replace operation?
+**The solution is to avoid using a namespace**, producing an unmanaged package. Eventually these namespace issues should be resolved by Salesforce to make packaging work regardless of namespacing.
 
 
 Deploy metadata to Salesforce error
@@ -73,36 +71,8 @@ Error  mdapi_output_dir/flows/Generate_UUID_for_Account-1.flow  Generate_UUID_fo
 Error  mdapi_output_dir/flows/Set_UUID_for_Account-1.flow       Set_UUID_for_Account-1       The version of the flow you're updating is active and can't be overwritten.
 ```
 
-Delete the flows from the metadata source (the `mdapi_output_dir/flows/` directory & the `<types>…</types>` element named **flow** from `mdapi_output_dir/package.xml`), and then attempt another deploy.
+Delete the flows that are already deployed from a previous version from the metadata source (the `mdapi_output_dir/flows/` directory & the `<types>…</types>` element named **flow** from `mdapi_output_dir/package.xml`), and then attempt another deploy.
 
 Also delete these from the packaging org to remove them from the next version.
 
-Manually Pruned Package Fails to Install
------------------------------------------
-
-```
-19:05:22 --- event-driven-functions [salesforce-deployment ▲ ] --- sfdx force:package:install --id 04tf4000001ft4hAAA -u OctoDevEd
-ERROR:  The package version is not fully available. If this is a recently created package version, please try again in a few minutes or contact the package publisher.
-```
-
-Eventually this proceeded, landing on a new error:
-
-```
-19:06:07 --- event-driven-functions [salesforce-deployment ▲ ] --- sfdx force:package:install --id 04tf4000001ft4hAAA -u OctoDevEd
-PackageInstallRequest is currently InProgress. You can continue to query the status using
-sfdx force:package:install:get -i 0Hf1I000000ED1eSAG -u mars@octo.com
-
-19:08:32 --- event-driven-functions [salesforce-deployment ▲ ] --- sfdx force:package:install:get -i 0Hf1I000000ED1eSAG -u mars@octo.com
-ERROR:  Encountered errors installing the package!,Installation errors: 
-1) (Set_UUID_for_Account_1) Event type PlatformLabsFn__Heroku_Function_Generate_UUID_Return__e does not exist., Details: Set_UUID_for_Account_1: Event type PlatformLabsFn__Heroku_Function_Generate_UUID_Return__e does not exist.
-2) (Set_UUID_for_Account_1) In field: EventSubscription - no EventSubscription named Set_UUID_for_Account_1 found, Details: Set_UUID_for_Account_1: In field: EventSubscription - no EventSubscription named Set_UUID_for_Account_1 found
-ERROR:  Installation errors: 
-1) (Set_UUID_for_Account_1) Event type PlatformLabsFn__Heroku_Function_Generate_UUID_Return__e does not exist., Details: Set_UUID_for_Account_1: Event type PlatformLabsFn__Heroku_Function_Generate_UUID_Return__e does not exist.
-2) (Set_UUID_for_Account_1) In field: EventSubscription - no EventSubscription named Set_UUID_for_Account_1 found, Details: Set_UUID_for_Account_1: In field: EventSubscription - no EventSubscription named Set_UUID_for_Account_1 found.
-```
-
-
-Epilog
-------
-
-"If only this was as easy as npm" —a friend
+What is the best way to revise Process Builder flows through packaging lifecycle?
