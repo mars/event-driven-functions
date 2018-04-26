@@ -2,7 +2,7 @@
 
 Invoke javascript functions in a [Heroku app](https://www.heroku.com/platform) via [Salesforce Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_define_ui.htm).
 
-💻👩‍🔬 *This project is a exploration into a new pattern for extending the compute capabilities of Salesforce. **Shared freely via [MIT licensed](LICENSE). Use at your own risk.***
+💻👩‍🔬 *This project is a exploration into a new pattern for extending the compute capabilities of Salesforce. **Shared freely via [MIT license](LICENSE). Use at your own risk.***
 
 * 📐 [Design](#user-content-design)
 * 🏙 [Architecture](#user-content-architecture)
@@ -62,7 +62,7 @@ This [UUID field](force-app/main/default/objects/Account/fields/UUID__c.field-me
 
 ### Platform Events
 
-In **Salesforce Setup** → **Platform Events**, two flows are defined.
+In **Salesforce Setup** → **Platform Events**, two events are defined.
 
 #### Invoke event
 
@@ -120,7 +120,7 @@ Usage
 ### First time setup
 
 ```bash
-git clone https://github.com/heroku/event-driven-functions.git
+git clone https://github.com/mars/event-driven-functions.git
 cd event-driven-functions/
 npm install
 cp .env.sample .env
