@@ -236,21 +236,19 @@ Performed based on environment variables. Either of the following authentication
   * default value: unset, no log output
 * `PLUGIN_NAMES`
   * configure the consumers/observers of the Salesforce data streams
-  * example: `PLUGIN_NAMES=console-output,parquet-output`
+  * example: `PLUGIN_NAMES=invoke-functions`
   * default value: `console-output`
 * `OBSERVE_SALESFORCE_TOPIC_NAMES`
-  * effective when `READ_MODE=changes` or `all`
   * the path part of a Streaming API URL
   * a comma-delimited list
-  * example: `OBSERVE_SALESFORCE_TOPIC_NAMES=/event/PreApproval_Query__e`
+  * example: `OBSERVE_SALESFORCE_TOPIC_NAMES=/event/Heroku_Function_Generate_UUID_Invoke__e`
   * default value: no Salesforce observer
 * `REDIS_URL`
   * connection config to Redis datastore
-  * required for *changes* stream, when `READ_MODE=all` or `changes`
   * example: `REDIS_URL=redis://localhost:6379`
   * default: unset, no Redis
 * `REPLAY_ID`
-  * force a specific replayId for CDC streaming
+  * force a specific replayId for Salesforce Streaming API
   * ensure to unset this after usage to prevent the stream from sticking
   * example: `REPLAY_ID=5678` (or `-2` for all possible events)
   * default: unset, receive all new events
