@@ -2,7 +2,10 @@
   "packageDirectories": [
     {
       "path": "force-app",
-      "default": true
+      "default": true,
+      "id": "0Hof4000000blNuCAI",
+      "versionName": "Initial 2GP",
+      "versionNumber": "1.0.0.0"
     }
   ],
   "namespace": "",

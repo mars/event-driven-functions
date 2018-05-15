@@ -281,6 +281,43 @@ sfdx force:package:install --id 04tf4000001ft4hAAA -u AnotherOrg
 
 #### Custom, package it yourself
 
+##### 2nd-generation unnamespaced, unlocked package (2GP)
+
+Based on [Salesforce DX 2GP docs](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_dev2gp_workflow.htm):
+
+```bash
+sfdx force:package2:create --name Event_Driven_Functions_Generate_UUID_2GP_sans_NS --description "Integration with event-driven-functions Heroku app" --containeroptions Unlocked --nonamespace
+```
+
+In `sfdx-project.json`, update `packageDirectories`.`0`.`id` with the output `Package2 Id`:
+
+```json
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true,
+      "id": "0Hof4000000blNuCAI",
+      "versionName": "Initial 2GP",
+      "versionNumber": "1.0.0"
+    }
+  ],
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "42.0"
+}
+```
+
+```bash
+sfdx force:package2:version:create --directory force-app --wait 10
+sfdx force:package:install --id <Subscriber Package2 Version Id> -u OrgAliasOrUserId --wait 10 --publishwait 10
+sfdx force:org:open -u EventDrivenFunctions
+```
+
+
+
+##### 1st-generation unmanaged (unnamespaced) package
+
 Follow [Build and Release Your App with Managed Packages](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_build_man_pack.htm) to prepare a packaging org.
 
 Diverging from those directions, we'll prepare an unmanaged package without a namespace. We have to skip namespacing for now, because of problems with Process Builder + Platform Events embedding namespaces in the metadata (evidence [1](NOTES.md#user-content-push-to-scratch-org-error), [2](NOTES.md#user-content-manually-pruned-package-fails-to-install)). <del>[Link its namespace with your Hub org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_reg_namespace.htm), and set the established `"namespace"` in [sfdx-project.json](sfdx-project.json), and then [provision & push to a fresh scratch org](#user-content-salesforce-setup).</del>
