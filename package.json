@@ -25,7 +25,7 @@
     "episode-7": "^1.1.1",
     "jsforce": "git+https://github.com/heroku/jsforce.git#add-stream-replay-support",
     "jsforce-connection": "^2.1.0",
-    "knox": "git+https://github.com/caremerge/knox.git",
+    "knox": "git+https://github.com/mars/knox.git#upgrade-mime",
     "node-rdkafka": "~2.2.3",
     "redis": "^2.8.0",
     "rxjs": "^5.5.2",
