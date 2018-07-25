@@ -41,9 +41,9 @@ These functions are composed in a Heroku app. Each function's arguments, return 
 Architecture
 ------------
 
-🔗 [Forked from **salesforce-data-connector**](https://github.com/mars/salesforce-data-connector), which itself uses a [fork of **jsforce**](https://github.com/jsforce/jsforce/pull/740) that supports durable consumption of the Salesforce Streaming API.
+This event-driven functions app is a **Node.js** app, along with an **sfdx** project providing the Salesforce customizations.
 
-This event-driven functions app is an [observer plugin](https://github.com/heroku/event-driven-functions/blob/master/lib/plugin-invoke-functions.js) to **salesforce-data-connector**, along with an `sfdx` project providing the Salesforce customizations.
+Based on [improvements to the **jsforce** Streaming module](https://github.com/jsforce/jsforce/pull/740) to support durable consumption of the Salesforce Streaming API. Those changes were merged to become **jsforce 1.9.0**.
 
 Example
 -------
