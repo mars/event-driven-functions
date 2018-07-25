@@ -23,7 +23,7 @@
   "dependencies": {
     "dotenv": "^4.0.0",
     "episode-7": "^1.1.1",
-    "jsforce": "git+https://github.com/heroku/jsforce.git#add-stream-replay-support",
+    "jsforce": "^1.9.0",
     "jsforce-connection": "^2.1.0",
     "knox": "git+https://github.com/mars/knox.git#upgrade-mime",
     "node-rdkafka": "~2.2.3",
